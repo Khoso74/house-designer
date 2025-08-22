@@ -26,7 +26,7 @@ export default function HomePage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/generate-house', {
+      const response = await fetch('/api/test', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
