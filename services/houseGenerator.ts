@@ -226,6 +226,22 @@ export class HouseGenerator {
               position: { x: room.dimensions.width * 0.8, y: 0, z: room.dimensions.length * 0.2 },
               rotation: 0,
               dimensions: { width: 2, length: 0.5, height: 0.6 }
+            },
+            {
+              id: 'armchair-1',
+              name: 'Armchair',
+              type: 'chair',
+              position: { x: room.dimensions.width * 0.7, y: 0, z: room.dimensions.length * 0.7 },
+              rotation: Math.PI / 4,
+              dimensions: { width: 0.8, length: 0.8, height: 0.9 }
+            },
+            {
+              id: 'side-table-1',
+              name: 'Side Table',
+              type: 'table',
+              position: { x: room.dimensions.width * 0.85, y: 0, z: room.dimensions.length * 0.75 },
+              rotation: 0,
+              dimensions: { width: 0.5, length: 0.5, height: 0.6 }
             }
           );
           break;
@@ -236,7 +252,7 @@ export class HouseGenerator {
               id: `bed-${room.id}`,
               name: 'Bed',
               type: 'bed',
-              position: { x: room.dimensions.width * 0.2, y: 0, z: room.dimensions.length * 0.3 },
+              position: { x: room.dimensions.width * 0.3, y: 0, z: room.dimensions.length * 0.4 },
               rotation: 0,
               dimensions: { width: 1.6, length: 2, height: 0.6 }
             },
@@ -244,9 +260,25 @@ export class HouseGenerator {
               id: `wardrobe-${room.id}`,
               name: 'Wardrobe',
               type: 'cabinet',
-              position: { x: room.dimensions.width * 0.8, y: 0, z: room.dimensions.length * 0.2 },
+              position: { x: room.dimensions.width * 0.1, y: 0, z: room.dimensions.length * 0.1 },
               rotation: 0,
               dimensions: { width: 1.5, length: 0.6, height: 2.2 }
+            },
+            {
+              id: `nightstand-${room.id}`,
+              name: 'Nightstand',
+              type: 'table',
+              position: { x: room.dimensions.width * 0.6, y: 0, z: room.dimensions.length * 0.3 },
+              rotation: 0,
+              dimensions: { width: 0.5, length: 0.4, height: 0.7 }
+            },
+            {
+              id: `dresser-${room.id}`,
+              name: 'Dresser',
+              type: 'cabinet',
+              position: { x: room.dimensions.width * 0.8, y: 0, z: room.dimensions.length * 0.7 },
+              rotation: Math.PI / 2,
+              dimensions: { width: 1.2, length: 0.5, height: 1.0 }
             }
           );
           break;
@@ -265,7 +297,7 @@ export class HouseGenerator {
               id: `stove-${room.id}`,
               name: 'Stove',
               type: 'appliance',
-              position: { x: room.dimensions.width * 0.3, y: 0, z: room.dimensions.length * 0.3 },
+              position: { x: room.dimensions.width * 0.3, y: 0, z: room.dimensions.length * 0.25 },
               rotation: 0,
               dimensions: { width: 0.6, length: 0.6, height: 0.9 }
             },
@@ -273,9 +305,25 @@ export class HouseGenerator {
               id: `fridge-${room.id}`,
               name: 'Refrigerator',
               type: 'appliance',
-              position: { x: room.dimensions.width * 0.8, y: 0, z: room.dimensions.length * 0.2 },
+              position: { x: room.dimensions.width * 0.8, y: 0, z: room.dimensions.length * 0.1 },
               rotation: 0,
               dimensions: { width: 0.7, length: 0.7, height: 1.8 }
+            },
+            {
+              id: `sink-${room.id}`,
+              name: 'Kitchen Sink',
+              type: 'appliance',
+              position: { x: room.dimensions.width * 0.5, y: 0, z: room.dimensions.length * 0.25 },
+              rotation: 0,
+              dimensions: { width: 0.8, length: 0.5, height: 0.9 }
+            },
+            {
+              id: `island-${room.id}`,
+              name: 'Kitchen Island',
+              type: 'table',
+              position: { x: room.dimensions.width * 0.5, y: 0, z: room.dimensions.length * 0.6 },
+              rotation: 0,
+              dimensions: { width: 1.5, length: 1.0, height: 0.9 }
             }
           );
           break;
@@ -286,17 +334,33 @@ export class HouseGenerator {
               id: `toilet-${room.id}`,
               name: 'Toilet',
               type: 'appliance',
-              position: { x: room.dimensions.width * 0.2, y: 0, z: room.dimensions.length * 0.3 },
+              position: { x: room.dimensions.width * 0.2, y: 0, z: room.dimensions.length * 0.2 },
               rotation: 0,
               dimensions: { width: 0.4, length: 0.7, height: 0.8 }
             },
             {
               id: `sink-${room.id}`,
-              name: 'Sink',
+              name: 'Bathroom Sink',
               type: 'appliance',
-              position: { x: room.dimensions.width * 0.6, y: 0, z: room.dimensions.length * 0.2 },
+              position: { x: room.dimensions.width * 0.7, y: 0, z: room.dimensions.length * 0.2 },
               rotation: 0,
-              dimensions: { width: 0.5, length: 0.4, height: 0.8 }
+              dimensions: { width: 0.6, length: 0.4, height: 0.8 }
+            },
+            {
+              id: `shower-${room.id}`,
+              name: 'Shower',
+              type: 'appliance',
+              position: { x: room.dimensions.width * 0.2, y: 0, z: room.dimensions.length * 0.7 },
+              rotation: 0,
+              dimensions: { width: 0.9, length: 0.9, height: 2.0 }
+            },
+            {
+              id: `cabinet-${room.id}`,
+              name: 'Bathroom Cabinet',
+              type: 'cabinet',
+              position: { x: room.dimensions.width * 0.7, y: 0, z: room.dimensions.length * 0.7 },
+              rotation: 0,
+              dimensions: { width: 0.6, length: 0.3, height: 1.8 }
             }
           );
           break;
