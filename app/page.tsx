@@ -34,11 +34,19 @@ export default function HomePage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
+      // Check if response is ok
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate house');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      // Check if response has content
+      const text = await response.text();
+      if (!text) {
+        throw new Error('Empty response from server');
+      }
+
+      // Parse JSON
+      const data = JSON.parse(text);
 
       if (data.success) {
         setHouseLayout(data.layout);
@@ -48,6 +56,7 @@ export default function HomePage() {
         throw new Error(data.error || 'Failed to generate house');
       }
     } catch (err) {
+      console.error('Form submission error:', err);
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
