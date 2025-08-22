@@ -3,8 +3,10 @@ import { HouseGenerator } from '@/services/houseGenerator';
 import { HouseFormData } from '@/types/house';
 
 export async function POST(request: NextRequest) {
+  console.log('API route called');
   try {
     const formData: HouseFormData = await request.json();
+    console.log('Form data received:', formData);
 
     // Validate form data
     if (!formData.plotSize || !formData.houseType || !formData.locationType) {
@@ -24,28 +26,20 @@ export async function POST(request: NextRequest) {
       height: layout.height
     });
 
-    // Return proper JSON response
-    return new NextResponse(JSON.stringify({
+    // Return simple JSON response
+    const response = {
       success: true,
       layout,
       tourWaypoints
-    }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    };
+    console.log('Sending response:', response);
+    return NextResponse.json(response);
 
   } catch (error) {
     console.error('Error generating house:', error);
-    return new NextResponse(JSON.stringify({
-      success: false,
-      error: 'Failed to generate house'
-    }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return NextResponse.json(
+      { success: false, error: 'Failed to generate house' },
+      { status: 500 }
+    );
   }
 }
