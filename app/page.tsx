@@ -283,16 +283,90 @@ export default function HomePage() {
                   </p>
                 </motion.div>
 
-                {/* 3D Viewer */}
+                {/* 3D Viewer with larger container */}
                 <ErrorBoundary fallback={Viewer3DErrorFallback}>
-                  <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <House3DViewer
-                      houseLayout={houseLayout!}
-                      tourWaypoints={tourWaypoints}
-                      onTourComplete={handleTourComplete}
-                    />
+                  <div className="bg-white rounded-xl shadow-2xl overflow-hidden border">
+                    <div className="h-[85vh] min-h-[700px] w-full">
+                      <House3DViewer
+                        houseLayout={houseLayout!}
+                        tourWaypoints={tourWaypoints}
+                        onTourComplete={handleTourComplete}
+                      />
+                    </div>
                   </div>
                 </ErrorBoundary>
+
+                {/* Action Buttons Panel */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="bg-white rounded-xl shadow-lg p-6 border"
+                >
+                  <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    🚀 House Actions
+                  </h3>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => window.location.reload()}
+                      className="flex flex-col items-center gap-2 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                    >
+                      🔄
+                      <span className="text-sm font-medium text-blue-700">Regenerate</span>
+                    </motion.button>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleDownload}
+                      className="flex flex-col items-center gap-2 p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+                    >
+                      💾
+                      <span className="text-sm font-medium text-green-700">Save Design</span>
+                    </motion.button>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleShare}
+                      className="flex flex-col items-center gap-2 p-4 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
+                    >
+                      📤
+                      <span className="text-sm font-medium text-purple-700">Share</span>
+                    </motion.button>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        const canvas = document.querySelector('canvas');
+                        if (canvas) {
+                          const link = document.createElement('a');
+                          link.download = `house-design-${Date.now()}.png`;
+                          link.href = canvas.toDataURL();
+                          link.click();
+                        }
+                      }}
+                      className="flex flex-col items-center gap-2 p-4 bg-orange-50 hover:bg-orange-100 rounded-lg border border-orange-200 transition-colors"
+                    >
+                      📷
+                      <span className="text-sm font-medium text-orange-700">Export Image</span>
+                    </motion.button>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-2 text-sm">💡 Pro Tips:</h4>
+                    <ul className="text-xs text-gray-600 space-y-1">
+                      <li>• Use the Auto Tour to explore all rooms automatically</li>
+                      <li>• Right-click and drag to pan around the house</li>
+                      <li>• Scroll to zoom in/out for detailed views</li>
+                      <li>• Try different plot sizes for unique layouts</li>
+                    </ul>
+                  </div>
+                </motion.div>
 
               {/* Instructions */}
               <motion.div
