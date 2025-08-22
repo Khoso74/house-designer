@@ -1,44 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { HouseGenerator } from '@/services/houseGenerator';
-import { HouseFormData } from '@/types/house';
+
+export async function GET() {
+  return NextResponse.json({ message: 'API is working' });
+}
 
 export async function POST(request: NextRequest) {
-  console.log('API route called');
   try {
-    const formData: HouseFormData = await request.json();
-    console.log('Form data received:', formData);
+    const formData = await request.json();
+    
+    // Simple test response
+    const testLayout = {
+      width: 20,
+      length: 30,
+      height: 3,
+      floors: 1,
+      rooms: [
+        {
+          id: 'living-1',
+          name: 'Living Room',
+          type: 'living',
+          position: { x: 0, y: 0, z: 0 },
+          dimensions: { width: 8, length: 6, height: 3 },
+          furniture: []
+        },
+        {
+          id: 'bedroom-1',
+          name: 'Bedroom 1',
+          type: 'bedroom',
+          position: { x: 8, y: 0, z: 0 },
+          dimensions: { width: 6, length: 4, height: 3 },
+          furniture: []
+        }
+      ],
+      style: 'modern'
+    };
 
-    // Validate form data
-    if (!formData.plotSize || !formData.houseType || !formData.locationType) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    const testTourWaypoints = [
+      {
+        position: [10, 5, -10],
+        lookAt: [10, 1.5, 15],
+        duration: 3,
+        roomName: 'Exterior View'
+      }
+    ];
 
-    // Generate house layout
-    const layout = HouseGenerator.generateHouse(formData);
-
-    // Generate tour waypoints
-    const tourWaypoints = HouseGenerator.generateTourWaypoints(layout.rooms, {
-      width: layout.width,
-      length: layout.length,
-      height: layout.height
+    return NextResponse.json({
+      success: true,
+      layout: testLayout,
+      tourWaypoints: testTourWaypoints
     });
 
-    // Return simple JSON response
-    const response = {
-      success: true,
-      layout,
-      tourWaypoints
-    };
-    console.log('Sending response:', response);
-    return NextResponse.json(response);
-
   } catch (error) {
-    console.error('Error generating house:', error);
+    console.error('API Error:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to generate house' },
+      { success: false, error: 'API Error' },
       { status: 500 }
     );
   }
