@@ -34,19 +34,11 @@ export default function HomePage() {
         body: JSON.stringify(formData),
       });
 
-      // Check if response is ok
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
       }
-
-      // Check if response has content
-      const text = await response.text();
-      if (!text) {
-        throw new Error('Empty response from server');
-      }
-
-      // Parse JSON
-      const data = JSON.parse(text);
 
       if (data.success) {
         setHouseLayout(data.layout);
