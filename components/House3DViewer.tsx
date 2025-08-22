@@ -83,44 +83,115 @@ export default function House3DViewer({ houseLayout, tourWaypoints, onTourComple
         )}
       </Canvas>
 
-      {/* Controls Overlay */}
-      <div className="absolute top-4 left-4 space-y-2">
+      {/* Enhanced Controls Overlay */}
+      <div className="absolute top-4 left-4 space-y-3">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={isAutoTour ? handleStopTour : handleAutoTour}
-          className={`px-4 py-2 rounded-lg font-semibold text-white transition-all duration-200 ${
+          className={`px-4 py-2 rounded-lg font-semibold text-white transition-all duration-200 shadow-lg ${
             isAutoTour 
               ? 'bg-red-600 hover:bg-red-700' 
               : 'bg-primary-600 hover:bg-primary-700'
           }`}
         >
-          {isAutoTour ? 'Stop Tour' : 'Auto Tour'}
+          {isAutoTour ? '⏹️ Stop Tour' : '🎥 Auto Tour'}
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => {
+            // Reset camera to default position
+            const camera = document.querySelector('canvas');
+            if (camera) {
+              window.location.reload();
+            }
+          }}
+          className="block px-4 py-2 rounded-lg font-semibold text-white bg-gray-600 hover:bg-gray-700 transition-all duration-200 shadow-lg"
+        >
+          🏠 Reset View
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => {
+            // Take screenshot functionality
+            alert('Screenshot feature coming soon!');
+          }}
+          className="block px-4 py-2 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-all duration-200 shadow-lg"
+        >
+          📷 Screenshot
         </motion.button>
         
         {isAutoTour && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3">
-            <div className="text-sm font-medium text-gray-700 mb-1">
-              {tourWaypoints[currentTourIndex]?.roomName || 'Tour Complete'}
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg border">
+            <div className="text-sm font-medium text-gray-700 mb-2">
+              🎬 {tourWaypoints[currentTourIndex]?.roomName || 'Tour Complete'}
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
               <div 
-                className="bg-primary-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(tourProgress / tourWaypoints.length) * 100}%` }}
+                className="bg-primary-600 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${((currentTourIndex + tourProgress) / tourWaypoints.length) * 100}%` }}
               />
+            </div>
+            <div className="text-xs text-gray-500">
+              {currentTourIndex + 1} of {tourWaypoints.length} locations
             </div>
           </div>
         )}
       </div>
 
-      {/* House Info */}
-      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-4 max-w-xs">
-        <h3 className="font-semibold text-gray-800 mb-2">House Details</h3>
-        <div className="space-y-1 text-sm text-gray-600">
-          <div>Style: {houseLayout.style}</div>
-          <div>Floors: {houseLayout.floors}</div>
-          <div>Rooms: {houseLayout.rooms.length}</div>
-          <div>Size: {houseLayout.width.toFixed(1)}m × {houseLayout.length.toFixed(1)}m</div>
+      {/* Enhanced House Info Panel */}
+      <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-5 max-w-sm shadow-xl border">
+        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          🏠 House Details
+        </h3>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Style:</span>
+            <span className="font-medium text-gray-800 capitalize">{houseLayout.style}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Floors:</span>
+            <span className="font-medium text-gray-800">{houseLayout.floors}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Total Rooms:</span>
+            <span className="font-medium text-gray-800">{houseLayout.rooms.length}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Dimensions:</span>
+            <span className="font-medium text-gray-800">{houseLayout.width.toFixed(1)}m × {houseLayout.length.toFixed(1)}m</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Floor Area:</span>
+            <span className="font-medium text-gray-800">{(houseLayout.width * houseLayout.length).toFixed(0)} m²</span>
+          </div>
+        </div>
+        
+        <div className="mt-4 pt-3 border-t border-gray-200">
+          <h4 className="font-semibold text-gray-700 mb-2 text-sm">Room Breakdown:</h4>
+          <div className="space-y-1 text-xs">
+            {Object.entries(
+              houseLayout.rooms.reduce((acc, room) => {
+                acc[room.type] = (acc[room.type] || 0) + 1;
+                return acc;
+              }, {} as Record<string, number>)
+            ).map(([type, count]) => (
+              <div key={type} className="flex justify-between">
+                <span className="text-gray-600 capitalize">{type}s:</span>
+                <span className="font-medium text-gray-700">{count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="mt-4 pt-3 border-t border-gray-200">
+          <div className="text-xs text-gray-500 text-center">
+            💱 Use mouse to rotate • Scroll to zoom
+          </div>
         </div>
       </div>
     </div>
