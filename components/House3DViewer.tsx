@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Text, Box, Cylinder } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Text, Box, Cylinder, Environment, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { HouseLayout, Room, Furniture, TourWaypoint } from '@/types/house';
 import { motion } from 'framer-motion';
@@ -40,16 +40,37 @@ export default function House3DViewer({ houseLayout, tourWaypoints, onTourComple
       <Canvas shadows className="w-full h-full">
         <PerspectiveCamera makeDefault position={[10, 10, 10]} />
         
-        {/* Lighting */}
-        <ambientLight intensity={0.4} />
-        <directionalLight
-          position={[10, 10, 5]}
-          intensity={1}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
+        {/* Enhanced HDR Environment Lighting */}
+        <Environment 
+          preset="sunset"
+          background={false}
+          environmentIntensity={0.4}
         />
-        <pointLight position={[0, 10, 0]} intensity={0.5} />
+        
+        <ambientLight intensity={0.2} color="#ffffff" />
+        <directionalLight
+          position={[25, 25, 15]}
+          intensity={1.5}
+          castShadow
+          shadow-mapSize-width={8192}
+          shadow-mapSize-height={8192}
+          shadow-camera-far={100}
+          shadow-camera-left={-30}
+          shadow-camera-right={30}
+          shadow-camera-top={30}
+          shadow-camera-bottom={-30}
+          shadow-bias={-0.0001}
+          color="#FFF8DC"
+        />
+        <directionalLight
+          position={[-15, 20, -10]}
+          intensity={0.6}
+          color="#87CEEB"
+        />
+        <pointLight position={[0, 8, 0]} intensity={0.8} color="#FFE4B5" distance={20} decay={2} />
+        <hemisphereLight
+          args={['#87CEEB', '#8FBC8F', 0.8]}
+        />
         
         {/* House Structure */}
         <HouseStructure houseLayout={houseLayout} />
@@ -205,28 +226,100 @@ export default function House3DViewer({ houseLayout, tourWaypoints, onTourComple
 function HouseStructure({ houseLayout }: { houseLayout: HouseLayout }) {
   return (
     <group>
-      {/* House Foundation */}
+      {/* Enhanced Foundation with PBR materials */}
       <Box
         position={[houseLayout.width / 2, -0.1, houseLayout.length / 2]}
-        args={[houseLayout.width + 0.2, 0.2, houseLayout.length + 0.2]}
+        args={[houseLayout.width + 0.4, 0.3, houseLayout.length + 0.4]}
+        castShadow
+        receiveShadow
       >
-        <meshStandardMaterial color="#8B7355" />
+        <meshStandardMaterial 
+          color="#555555" 
+          roughness={0.9}
+          metalness={0.1}
+        />
       </Box>
 
-      {/* House Walls */}
+      {/* Realistic House Walls with brick/concrete texture */}
       <Box
         position={[houseLayout.width / 2, houseLayout.height / 2, houseLayout.length / 2]}
         args={[houseLayout.width, houseLayout.height, houseLayout.length]}
+        castShadow
+        receiveShadow
       >
-        <meshStandardMaterial color="#F5F5DC" />
+        <meshStandardMaterial 
+          color={houseLayout.style === 'modern' ? '#E8E8E8' : '#D2B48C'} 
+          roughness={0.8}
+          metalness={0.0}
+        />
       </Box>
 
-      {/* Roof */}
+      {/* Realistic Roof with shingle texture */}
       <Box
         position={[houseLayout.width / 2, houseLayout.height + 0.5, houseLayout.length / 2]}
-        args={[houseLayout.width + 0.4, 1, houseLayout.length + 0.4]}
+        args={[houseLayout.width + 0.6, 1.2, houseLayout.length + 0.6]}
+        castShadow
+        receiveShadow
       >
-        <meshStandardMaterial color="#8B4513" />
+        <meshStandardMaterial 
+          color={houseLayout.style === 'modern' ? '#2F4F4F' : '#8B4513'} 
+          roughness={0.95}
+          metalness={0.05}
+        />
+      </Box>
+
+      {/* Architectural Details */}
+      {/* Entry Door */}
+      <Box
+        position={[houseLayout.width / 2, 1, -0.05]}
+        args={[1.2, 2.2, 0.1]}
+        castShadow
+      >
+        <meshStandardMaterial 
+          color={houseLayout.style === 'modern' ? '#8B4513' : '#654321'} 
+          roughness={0.7}
+          metalness={0.1}
+        />
+      </Box>
+
+      {/* Entry Steps */}
+      <Box
+        position={[houseLayout.width / 2, -0.4, -1.5]}
+        args={[2.5, 0.2, 1.2]}
+        receiveShadow
+      >
+        <meshStandardMaterial 
+          color="#696969" 
+          roughness={0.8}
+          metalness={0.1}
+        />
+      </Box>
+
+      {/* Front Windows */}
+      <Box
+        position={[houseLayout.width * 0.25, houseLayout.height * 0.6, -0.02]}
+        args={[1.5, 1.2, 0.05]}
+      >
+        <meshStandardMaterial 
+          color="#87CEEB" 
+          transparent
+          opacity={0.3}
+          roughness={0.1}
+          metalness={0.1}
+        />
+      </Box>
+
+      <Box
+        position={[houseLayout.width * 0.75, houseLayout.height * 0.6, -0.02]}
+        args={[1.5, 1.2, 0.05]}
+      >
+        <meshStandardMaterial 
+          color="#87CEEB" 
+          transparent
+          opacity={0.3}
+          roughness={0.1}
+          metalness={0.1}
+        />
       </Box>
 
       {/* Render all rooms */}
@@ -337,12 +430,87 @@ function FurnitureComponent({ furniture, style }: { furniture: Furniture; style:
  */
 function GroundPlane({ width, length }: { width: number; length: number }) {
   return (
-    <Box
-      position={[width / 2, -0.5, length / 2]}
-      args={[width + 10, 1, length + 10]}
-    >
-      <meshStandardMaterial color="#90EE90" />
-    </Box>
+    <>
+      {/* Main grass ground with realistic texture */}
+      <Box
+        position={[width / 2, -0.5, length / 2]}
+        args={[width + 20, 1, length + 20]}
+        receiveShadow
+      >
+        <meshStandardMaterial 
+          color="#228B22" 
+          roughness={0.95}
+          metalness={0.0}
+        />
+      </Box>
+      
+      {/* Concrete pathway around house */}
+      <Box
+        position={[width / 2, -0.48, length / 2]}
+        args={[width + 2, 0.05, length + 2]}
+        receiveShadow
+      >
+        <meshStandardMaterial 
+          color="#C0C0C0" 
+          roughness={0.7}
+          metalness={0.0}
+        />
+      </Box>
+      
+      {/* Decorative Trees */}
+      <Cylinder
+        position={[width + 5, 1, length / 4]}
+        args={[0.5, 0.5, 2]}
+        receiveShadow
+        castShadow
+      >
+        <meshStandardMaterial 
+          color="#8B4513" 
+          roughness={0.9}
+          metalness={0.0}
+        />
+      </Cylinder>
+      
+      <Cylinder
+        position={[width + 5, 3, length / 4]}
+        args={[2, 2, 2]}
+        receiveShadow
+        castShadow
+      >
+        <meshStandardMaterial 
+          color="#228B22" 
+          roughness={0.9}
+          metalness={0.0}
+        />
+      </Cylinder>
+      
+      {/* Second Tree */}
+      <Cylinder
+        position={[-3, 1, length * 0.7]}
+        args={[0.4, 0.4, 1.8]}
+        receiveShadow
+        castShadow
+      >
+        <meshStandardMaterial 
+          color="#8B4513" 
+          roughness={0.9}
+          metalness={0.0}
+        />
+      </Cylinder>
+      
+      <Cylinder
+        position={[-3, 2.8, length * 0.7]}
+        args={[1.8, 1.8, 1.8]}
+        receiveShadow
+        castShadow
+      >
+        <meshStandardMaterial 
+          color="#32CD32" 
+          roughness={0.9}
+          metalness={0.0}
+        />
+      </Cylinder>
+    </>
   );
 }
 
