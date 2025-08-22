@@ -24,17 +24,28 @@ export async function POST(request: NextRequest) {
       height: layout.height
     });
 
-    return NextResponse.json({
+    // Return proper JSON response
+    return new NextResponse(JSON.stringify({
       success: true,
       layout,
       tourWaypoints
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
   } catch (error) {
     console.error('Error generating house:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to generate house' },
-      { status: 500 }
-    );
+    return new NextResponse(JSON.stringify({
+      success: false,
+      error: 'Failed to generate house'
+    }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   }
 }
